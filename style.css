@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+body {
+  height: 100svh;
+}
+#main-layout {
+  display: flex;
+  height: 100%;
+}
+#left-content {
+  width: 85svw;
+  background-color: chocolate;
+}
+#upgrades {
+  display: flex;
+  flex-direction: column;
+  width: 15svw;
+}
+
+.upgrade-container {
+  border: 1px solid goldenrod;
+  height: 10svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: default;
+  user-select: none;
+}
+.upgrade-container:hover {
+  background-color: beige;
+}
+
+.upgrade-cost,
+.upgrade-inc {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5px 0 5px;
+}
+.upgrade-name {
+  display: flex;
+  justify-content: center;
+}
+.upgrade-header {
+  font-size: 1.1em;
+}
+
+.upgrade-value {
+  font-size: 0.9em;
+  color: brown;
+}
+
+.upgrade-name {
+  font-weight: bold;
+  text-shadow: 2px 1px 5px goldenrod;
+}
