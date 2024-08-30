@@ -18,7 +18,35 @@ body {
 #mid-content {
   height: 80%;
 }
+#theme-container {
+  position: absolute;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-around;
+  align-items: center;
+  top: 0;
+  left: 0;
+  background-color: grey;
+  opacity: 0.9;
+  width: 13svw;
+  height: 10svh;
+  border-radius: 0 0 2em 0;
+}
 
+button {
+  height: 4svh;
+  width: 5svw;
+  border-radius: 2em;
+}
+
+#dark-mode {
+  background-color: black;
+  color: white;
+}
+#light-mode {
+  background-color: white;
+  color: black;
+}
 #value-wrapper {
   position: absolute;
   top: 45svh;
@@ -105,4 +133,15 @@ body {
 .upgrade-name {
   font-weight: bold;
   text-shadow: 2px 1px 5px goldenrod;
+}
+
+/* This is a workaround to do hover style switching in js without eventhandling.
+I would rather not have the same events being handled in multiple places so it's here in css instead of js, even though some js magic was needed */
+.darkmode:hover {
+  background-color: #5f5f5f;
+}
+
+.darkmode {
+  background-color: darkslategray;
+  color: dark;
 }

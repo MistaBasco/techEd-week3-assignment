@@ -3,6 +3,11 @@ const upgrades = document.getElementById("upgrades");
 const cookieBtn = document.getElementById("cookie-img");
 const countValue = document.getElementById("count-value");
 const cookiePS = document.getElementById("cookie-ps");
+const lContent = document.getElementById("left-content");
+const vWrapper = document.getElementById("value-wrapper");
+const bContent = document.getElementById("bot-content");
+const dButton = document.getElementById("dark-mode");
+const lButton = document.getElementById("light-mode");
 
 let cookieCounter = 100;
 let cPerSecond = 0;
@@ -20,15 +25,13 @@ async function populateUpgradeData() {
     "https://cookie-upgrade-api.vercel.app/api/upgrades"
   );
   let promData = await promise.json();
-  //   console.log(promData);
-  const uArray = [];
+
   promData.forEach((upgrade) => {
     //assign the values of upgrade name, cost and icrement to variables.
     let uIndex = upgrade.index;
     let uName = upgrade.name;
     let uCost = upgrade.cost;
     let uIncrease = upgrade.increase;
-    // console.log(uName + " " + uCost);
     //create and format the data containers
     const costTag = document.createElement("h2");
     costTag.classList.add("upgrade-header");
@@ -66,7 +69,6 @@ async function populateUpgradeData() {
     uBox.appendChild(costDiv);
     uBox.appendChild(incDiv);
     uBox.addEventListener("click", () => {
-      console.log(cookieCounter + " " + uCost);
       if (cookieCounter >= uCost) {
         cookieCounter -= uCost;
         cPerSecond += uIncrease;
@@ -77,9 +79,20 @@ async function populateUpgradeData() {
       }
     });
     upgrades.appendChild(uBox); //because 'upgrades' is an element that already exists in the DOM, this will "render the upgrades"
+
+    //Pulling the recently rendered elements to manipulate in js
+    const uContainers = document.querySelectorAll(".upgrade-container");
+    const uValues = document.querySelectorAll(".upgrade-value");
+    const uNames = document.querySelectorAll(".upgrade-name");
+
+    dButton.addEventListener("click", () =>
+      makeDark(uContainers, uValues, uNames)
+    );
+    lButton.addEventListener("click", () =>
+      makeLight(uContainers, uValues, uNames)
+    );
   });
 }
-populateUpgradeData();
 
 ///Event Listeners
 
@@ -112,10 +125,52 @@ function updateStorage() {
   localStorage.setItem("cookieCount", cookieCounter);
   localStorage.setItem("cookiePS", cPerSecond);
 }
-
 function loadGame() {
   if (localStorage.getItem("cookieCount") && localStorage.getItem("cookiePS")) {
     cookieCounter = JSON.parse(localStorage.getItem("cookieCount"));
     cPerSecond = JSON.parse(localStorage.getItem("cookiePS"));
   }
+  // if (localStorage.getItem("theme")){
+  //   if(localStorage.getItem("theme")!= "light"){
+  //     makeDark
+  //   }
+  // }
 }
+
+function makeDark(uContainers, uValues, uNames) {
+  localStorage.setItem("theme", "darkmode");
+  lContent.style.backgroundColor = "#3e2723";
+  vWrapper.style.backgroundColor = "#880e4f";
+  bContent.style.backgroundColor = "#2f4f4f";
+  uContainers.forEach((uCon) => {
+    uCon.style.border = "1px solid #b8860b";
+    uCon.classList.add("darkmode");
+  });
+  uValues.forEach((value) => {
+    value.style.color = "beige";
+  });
+  uNames.forEach((name) => {
+    name.style.textShadow = "2px 1px 5px #b8860b";
+  });
+}
+
+function makeLight(uContainers, uValues, uNames) {
+  localStorage.setItem("theme", "lightmode");
+  lContent.style.backgroundColor = "chocolate";
+  vWrapper.style.backgroundColor = "pink";
+  bContent.style.backgroundColor = "slategray";
+
+  console.log(uContainers);
+  uContainers.forEach((uCon) => {
+    uCon.style.border = "1px solid goldenrod";
+    uCon.classList.remove("darkmode");
+  });
+  uValues.forEach((value) => {
+    value.style.color = "darkgoldenrod";
+  });
+  uNames.forEach((name) => {
+    name.style.textShadow = "2px 1px 5px goldenrod";
+  });
+}
+
+populateUpgradeData();
