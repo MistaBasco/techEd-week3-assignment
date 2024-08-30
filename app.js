@@ -1,5 +1,18 @@
-//Pulls
+//Pulls and global assigns
 const upgrades = document.getElementById("upgrades");
+const cookieBtn = document.getElementById("cookie-img");
+const countValue = document.getElementById("count-value");
+const cookiePS = document.getElementById("cookie-ps");
+
+let cookieCounter = 0;
+let cPerSecond = 0;
+loadGame();
+let intervalID = setInterval(() => {
+  cookieCounter += cPerSecond;
+  updateAll();
+}, 1000);
+updateCount();
+updateCPS();
 
 //Create and Populate Upgrade Data
 async function populateUpgradeData() {
@@ -7,13 +20,15 @@ async function populateUpgradeData() {
     "https://cookie-upgrade-api.vercel.app/api/upgrades"
   );
   let promData = await promise.json();
-  console.log(promData);
-  let uName, uCost, uIncrease;
+  //   console.log(promData);
+  const uArray = [];
   promData.forEach((upgrade) => {
     //assign the values of upgrade name, cost and icrement to variables.
-    uName = upgrade.name;
-    uCost = upgrade.cost;
-    uIncrease = upgrade.increase;
+    let uIndex = upgrade.index;
+    let uName = upgrade.name;
+    let uCost = upgrade.cost;
+    let uIncrease = upgrade.increase;
+    // console.log(uName + " " + uCost);
     //create and format the data containers
     const costTag = document.createElement("h2");
     costTag.classList.add("upgrade-header");
@@ -50,7 +65,57 @@ async function populateUpgradeData() {
     uBox.appendChild(nameDiv);
     uBox.appendChild(costDiv);
     uBox.appendChild(incDiv);
+    uBox.addEventListener("click", () => {
+      console.log(cookieCounter + " " + uCost);
+      if (cookieCounter >= uCost) {
+        cookieCounter -= uCost;
+        cPerSecond += uIncrease;
+        updateCount();
+      } else {
+        let diff = uCost - cookieCounter;
+        alert(`You cannot afford this! you need ${diff} more cookies!`);
+      }
+    });
     upgrades.appendChild(uBox); //because 'upgrades' is an element that already exists in the DOM, this will "render the upgrades"
   });
 }
 populateUpgradeData();
+
+///Event Listeners
+
+cookieBtn.addEventListener("click", clickCookie);
+
+//Functions
+function clickCookie() {
+  //   cookieBtn.style.rotate = "90deg";
+  cookieCounter++;
+  updateCount();
+}
+function updateCount() {
+  countValue.innerText = cookieCounter;
+}
+function updateCPS() {
+  cookiePS.innerText = formatCount(cPerSecond);
+}
+
+function formatCount(count) {
+  const countStr = String(count);
+  const padding = " ".repeat(Math.max(0, 4 - countStr.length));
+  return countStr + padding + "c/s";
+}
+function updateAll() {
+  updateCount();
+  updateCPS();
+  updateStorage();
+}
+function updateStorage() {
+  localStorage.setItem("cookieCount", cookieCounter);
+  localStorage.setItem("cookiePS", cPerSecond);
+}
+
+function loadGame() {
+  if (localStorage.getItem("cookieCount") && localStorage.getItem("cookiePS")) {
+    cookieCounter = JSON.parse(localStorage.getItem("cookieCount"));
+    cPerSecond = JSON.parse(localStorage.getItem("cookiePS"));
+  }
+}

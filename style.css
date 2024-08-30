@@ -15,6 +15,42 @@ body {
   width: 85svw;
   background-color: chocolate;
 }
+#mid-content {
+  height: 80%;
+}
+
+#value-wrapper {
+  position: absolute;
+  top: 45svh;
+  left: 80svh;
+  display: flex;
+  flex-wrap: wrap;
+  width: 20svw;
+  background-color: pink;
+  justify-content: space-between;
+  border-radius: 1em;
+}
+#value-wrapper > * {
+  padding: 2px 20px 2px 8px;
+}
+#bot-content {
+  /* height: 20svh; */
+  background-color: slategray;
+  opacity: 0.9;
+}
+
+#cookie-img {
+  max-height: 20svh;
+  width: auto;
+  max-width: 20svh;
+  cursor: default;
+  user-select: none;
+}
+
+/* #cookie-img:hover {
+  rotate: 45deg;
+} */
+
 #upgrades {
   display: flex;
   flex-direction: column;
