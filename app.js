@@ -4,7 +4,7 @@ const cookieBtn = document.getElementById("cookie-img");
 const countValue = document.getElementById("count-value");
 const cookiePS = document.getElementById("cookie-ps");
 
-let cookieCounter = 0;
+let cookieCounter = 100;
 let cPerSecond = 0;
 loadGame();
 let intervalID = setInterval(() => {
