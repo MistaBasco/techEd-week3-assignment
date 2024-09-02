@@ -143,5 +143,5 @@ I would rather not have the same events being handled in multiple places so it's
 
 .darkmode {
   background-color: darkslategray;
-  color: dark;
+  /* color: beige; */
 }

@@ -21,79 +21,89 @@ updateCPS();
 
 //Create and Populate Upgrade Data
 async function populateUpgradeData() {
-  let promise = await fetch(
-    "https://cookie-upgrade-api.vercel.app/api/upgrades"
-  );
-  let promData = await promise.json();
+  try {
+    //attempt to fetch the upgrade data from the API
 
-  promData.forEach((upgrade) => {
-    //assign the values of upgrade name, cost and icrement to variables.
-    let uIndex = upgrade.index;
-    let uName = upgrade.name;
-    let uCost = upgrade.cost;
-    let uIncrease = upgrade.increase;
-    //create and format the data containers
-    const costTag = document.createElement("h2");
-    costTag.classList.add("upgrade-header");
-    costTag.innerText = "Cost: ";
-    const incTag = document.createElement("h2");
-    incTag.classList.add("upgrade-header");
-    incTag.innerText = "Increment: ";
+    let promise = await fetch(
+      "https://cookie-upgrade-api.vercel.app/api/upgrades"
+    );
 
-    const nameDiv = document.createElement("div"); // create a div container for name elements
-    nameDiv.classList.add("upgrade-name"); // give the div a class of upgrade-name
-    const nameTag = document.createElement("h2"); //create an h2 tag
-    nameTag.classList.add("upgrade-header");
-    nameTag.innerText = uName; // populate the tag with upgradename (pulled from API)
-    nameDiv.appendChild(nameTag);
-    const costDiv = document.createElement("div"); // create a div container for cost elements
-    costDiv.classList.add("upgrade-cost"); //giv the div a class of upgrade-cost
-    costDiv.appendChild(costTag); // add the costTag div, created in global scope, to the costDiv
-    const costName = document.createElement("h2");
-    costName.innerText = uCost;
-    costName.classList.add("upgrade-value");
-    costDiv.appendChild(costName);
+    if (!promise.ok) {
+      throw new Error(`HTTP error! Status: ${promise.status}`);
+    }
+    let promData = await promise.json();
 
-    const incDiv = document.createElement("div"); //create a div container for increment elements
-    incDiv.classList.add("upgrade-inc"); //give the div a class of upgrade-inc
-    incDiv.appendChild(incTag); // add the incTag div, created in globl scope to the incDiv
-    const incValue = document.createElement("h2");
-    incValue.innerText = uIncrease;
-    incValue.classList.add("upgrade-value");
-    incDiv.appendChild(incValue);
+    promData.forEach((upgrade) => {
+      //assign the values of upgrade name, cost and icrement to variables.
+      let uIndex = upgrade.index;
+      let uName = upgrade.name;
+      let uCost = upgrade.cost;
+      let uIncrease = upgrade.increase;
+      //create and format the data containers
+      const costTag = document.createElement("h2");
+      costTag.classList.add("upgrade-header");
+      costTag.innerText = "Cost: ";
+      const incTag = document.createElement("h2");
+      incTag.classList.add("upgrade-header");
+      incTag.innerText = "Increment: ";
 
-    const uBox = document.createElement("div");
-    uBox.classList.add("upgrade-container");
-    //render data containers
-    uBox.appendChild(nameDiv);
-    uBox.appendChild(costDiv);
-    uBox.appendChild(incDiv);
-    uBox.addEventListener("click", () => {
-      if (cookieCounter >= uCost) {
-        cookieCounter -= uCost;
-        cPerSecond += uIncrease;
-        updateCount();
-      } else {
-        let diff = uCost - cookieCounter;
-        alert(`You cannot afford this! you need ${diff} more cookies!`);
-      }
+      const nameDiv = document.createElement("div"); // create a div container for name elements
+      nameDiv.classList.add("upgrade-name"); // give the div a class of upgrade-name
+      const nameTag = document.createElement("h2"); //create an h2 tag
+      nameTag.classList.add("upgrade-header");
+      nameTag.innerText = uName; // populate the tag with upgradename (pulled from API)
+      nameDiv.appendChild(nameTag);
+      const costDiv = document.createElement("div"); // create a div container for cost elements
+      costDiv.classList.add("upgrade-cost"); //giv the div a class of upgrade-cost
+      costDiv.appendChild(costTag); // add the costTag div, created in global scope, to the costDiv
+      const costName = document.createElement("h2");
+      costName.innerText = uCost;
+      costName.classList.add("upgrade-value");
+      costDiv.appendChild(costName);
+
+      const incDiv = document.createElement("div"); //create a div container for increment elements
+      incDiv.classList.add("upgrade-inc"); //give the div a class of upgrade-inc
+      incDiv.appendChild(incTag); // add the incTag div, created in globl scope to the incDiv
+      const incValue = document.createElement("h2");
+      incValue.innerText = uIncrease;
+      incValue.classList.add("upgrade-value");
+      incDiv.appendChild(incValue);
+
+      const uBox = document.createElement("div");
+      uBox.classList.add("upgrade-container");
+      //render data containers
+      uBox.appendChild(nameDiv);
+      uBox.appendChild(costDiv);
+      uBox.appendChild(incDiv);
+      uBox.addEventListener("click", () => {
+        if (cookieCounter >= uCost) {
+          cookieCounter -= uCost;
+          cPerSecond += uIncrease;
+          updateCount();
+        } else {
+          let diff = uCost - cookieCounter;
+          alert(`You cannot afford this! you need ${diff} more cookies!`);
+        }
+      });
+      upgrades.appendChild(uBox); //because 'upgrades' is an element that already exists in the DOM, this will "render the upgrades"
+
+      //Pulling the recently rendered elements to manipulate in js
+      const uContainers = document.querySelectorAll(".upgrade-container");
+      const uValues = document.querySelectorAll(".upgrade-value");
+      const uNames = document.querySelectorAll(".upgrade-name");
+
+      dButton.addEventListener("click", () =>
+        makeDark(uContainers, uValues, uNames)
+      );
+      lButton.addEventListener("click", () =>
+        makeLight(uContainers, uValues, uNames)
+      );
     });
-    upgrades.appendChild(uBox); //because 'upgrades' is an element that already exists in the DOM, this will "render the upgrades"
-
-    //Pulling the recently rendered elements to manipulate in js
-    const uContainers = document.querySelectorAll(".upgrade-container");
-    const uValues = document.querySelectorAll(".upgrade-value");
-    const uNames = document.querySelectorAll(".upgrade-name");
-
-    dButton.addEventListener("click", () =>
-      makeDark(uContainers, uValues, uNames)
-    );
-    lButton.addEventListener("click", () =>
-      makeLight(uContainers, uValues, uNames)
-    );
-  });
+  } catch (error) {
+    console.error("Error populating upgrade data:", error);
+    alert("There was an issue loading upgrade data. Please try again later.");
+  }
 }
-
 ///Event Listeners
 
 cookieBtn.addEventListener("click", clickCookie);
@@ -151,6 +161,7 @@ function makeDark(uContainers, uValues, uNames) {
   });
   uNames.forEach((name) => {
     name.style.textShadow = "2px 1px 5px #b8860b";
+    // name.style.color = "beige";
   });
 }
 
@@ -160,9 +171,10 @@ function makeLight(uContainers, uValues, uNames) {
   vWrapper.style.backgroundColor = "pink";
   bContent.style.backgroundColor = "slategray";
 
-  console.log(uContainers);
+  // console.log(uContainers);
   uContainers.forEach((uCon) => {
     uCon.style.border = "1px solid goldenrod";
+    // uCon.style.color = "darkslategrey";
     uCon.classList.remove("darkmode");
   });
   uValues.forEach((value) => {
